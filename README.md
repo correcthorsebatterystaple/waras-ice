@@ -6,3 +6,7 @@ Generate waras events from `assets/waras.csv` and give reference dates `2020-03-
 ```
 npm start -- --file assets/waras.csv --greg-ref 2020-03-26 --hijri-ref 1441-08-02
 ```
+Also you can specify an outfile as so, outfile defaults to current working directory
+```
+npm start -- --file assets/waras.csv --greg-ref 2020-03-26 --hijri-ref 1441-08-02 --out-file assets/waras.ics
+```
