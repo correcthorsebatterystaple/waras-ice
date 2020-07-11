@@ -1,6 +1,8 @@
 import parse from 'csv-parse/lib/sync';
 import path from 'path';
 import moment, { Moment } from 'moment';
+import args from 'minimist-argv';
+import 'colors';
 import * as ics from 'ics';
 import { readFileSync, writeFileSync } from 'fs';
 import { IHijriEvent } from './models/hijriEvent.model';
@@ -8,9 +10,28 @@ import { IHijriDate } from './models/hijriDate.model';
 import { HijriMonth } from './models/enums/HijriMonth.enum';
 import { IGregEvent } from './models/gregEvent.model';
 
+const filename = args['file'];
+const gregRefDate = args['greg-ref'];
+const hijriRefDate = args['hijri-ref'];
 
-import args from 'minimist-argv';
+(() => {
+    const errors: string[] = [];
 
+    if (!filename) {
+        errors.push(`[${'ERROR'.red}]\tFile missing. specify file with --file.`);
+    }
+    if (!gregRefDate) {
+        errors.push(`[${'ERROR'.red}]\tGregorian reference date missing. specify file with --greg-ref.`);
+    }
+    if (!hijriRefDate) {
+        errors.push(`[${'ERROR'.red}]\tHijri reference  missing. specify file with --hijri-ref.`);
+    }
+
+    if (errors.length) {
+        console.log(errors.join('\n'));
+        process.exit(1);
+    }
+})();
 interface WarasCsv {
     name: string;
     warasDay: string;
@@ -86,11 +107,11 @@ function hijriDateIsInList(list: IHijriEvent[], date: IHijriDate): IHijriEvent {
 
 (async () => {
 
-    const hijriWarasEvents = readData(path.resolve(args.file));
+    const hijriWarasEvents = readData(path.resolve(filename));
     const gregWarasEvents: IGregEvent[] = [];
 
-    const hijriStartDate = parseHijriDate(args['hijri-ref']);
-    const gregStartDate = moment(args['greg-ref']);
+    const hijriStartDate = parseHijriDate(hijriRefDate);
+    const gregStartDate = moment(gregRefDate);
 
     const gregEndDate = gregStartDate.clone().add(1, 'year');
 
