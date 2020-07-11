@@ -13,7 +13,7 @@ import { IGregEvent } from './models/gregEvent.model';
 const filename = args['file'];
 const gregRefDate = args['greg-ref'];
 const hijriRefDate = args['hijri-ref'];
-const outFilename = args['out-file'] || args['o'] || '.';
+const outFilename = args['out-file'] || args['o'] || './waras.ics';
 const alarmMinutes = args['alarm-minutes'] || 10;
 
 (() => {
@@ -153,6 +153,6 @@ function hijriDateIsInList(list: IHijriEvent[], date: IHijriDate): IHijriEvent {
         };
     });
 
-    writeFileSync(path.resolve(__dirname, outFilename), ics.createEvents(icsEvents).value);
+    writeFileSync(outFilename, ics.createEvents(icsEvents).value);
 
 })();
