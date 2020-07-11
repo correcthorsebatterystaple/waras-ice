@@ -1,0 +1,16 @@
+{
+    "defaultSeverity": "error",
+    "rules": {
+        "semicolon": true,
+        "typedef": [
+            true,
+            "call-signature"
+        ],
+        "no-any": true,
+        "no-trailing-whitespace": true,
+        "quotemark": [
+            true,
+            "single"
+        ]
+    }
+}
