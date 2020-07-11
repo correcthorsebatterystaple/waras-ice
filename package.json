@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "colors": "^1.4.0",
     "csv-parse": "^4.10.1",
     "ics": "^2.22.1",
     "minimist-argv": "^1.1.0",
