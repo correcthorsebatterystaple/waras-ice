@@ -13,6 +13,8 @@ import { IGregEvent } from './models/gregEvent.model';
 const filename = args['file'];
 const gregRefDate = args['greg-ref'];
 const hijriRefDate = args['hijri-ref'];
+const outFilename = args['out-file'] || args['o'] || '.';
+const alarmMinutes = args['alarm-minutes'] || 10;
 
 (() => {
     const errors: string[] = [];
@@ -144,13 +146,13 @@ function hijriDateIsInList(list: IHijriEvent[], date: IHijriDate): IHijriEvent {
                     action: 'display',
                     trigger: {
                         before: true,
-                        minutes: 10,
+                        minutes: alarmMinutes,
                     },
                 },
             ],
         };
     });
 
-    writeFileSync(path.resolve(__dirname, '../assets/waras.ics'), ics.createEvents(icsEvents).value);
+    writeFileSync(path.resolve(__dirname, outFilename), ics.createEvents(icsEvents).value);
 
 })();
