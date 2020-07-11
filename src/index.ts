@@ -139,6 +139,15 @@ function hijriDateIsInList(list: IHijriEvent[], date: IHijriDate): IHijriEvent {
             end: [date.year(), date.month() + 1, date.clone().add(1, 'day').date(), 0, 0],
             endInputType: 'local',
             title: event.name,
+            alarms: [
+                {
+                    action: 'display',
+                    trigger: {
+                        before: true,
+                        minutes: 10,
+                    },
+                },
+            ],
         };
     });
 
