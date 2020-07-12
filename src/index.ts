@@ -135,8 +135,9 @@ function hijriDateIsInList(list: IHijriEvent[], date: IHijriDate): IHijriEvent {
 
     const icsEvents = gregWarasEvents.map<ics.EventAttributes>(event => {
         const date = event.date;
+        const startDate = date.clone().add(-1, 'day');
         return {
-            start: [date.year(), date.month() + 1, date.clone().add(-1, 'day').date(), 18, 0],
+            start: [startDate.year(), startDate.month() + 1, startDate.date(), 18, 0],
             startInputType: 'local',
             end: [date.year(), date.month() + 1, date.date(), 18, 0],
             endInputType: 'local',
