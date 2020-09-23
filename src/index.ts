@@ -10,11 +10,14 @@ import { IHijriDate } from './models/hijriDate.model';
 import { HijriMonth } from './models/enums/HijriMonth.enum';
 import { IGregEvent } from './models/gregEvent.model';
 
-const filename = args['file'];
-const gregRefDate = args['greg-ref'];
-const hijriRefDate = args['hijri-ref'];
+const filename = args['file'] || './assets/waras.csv';
+const gregRefDate = args['greg-ref'] || '2020-03-26';
+const hijriRefDate = args['hijri-ref'] || '1441-08-02';
 const outFilename = args['out-file'] || args['o'] || './waras.ics';
 const alarmMinutes = args['alarm-minutes'] || 10;
+const years = args['years'] || 1;
+const [eventStartHour, eventStartMinute] = args['event-start-time']?.split('-') || [18, 0];
+const [eventEndHour, eventEndMinute] = args['event-end-time']?.split('-') || [18, 0];
 
 (() => {
     const errors: string[] = [];
@@ -115,7 +118,7 @@ function hijriDateIsInList(list: IHijriEvent[], date: IHijriDate): IHijriEvent {
     const hijriStartDate = parseHijriDate(hijriRefDate);
     const gregStartDate = moment(gregRefDate);
 
-    const gregEndDate = gregStartDate.clone().add(1, 'year');
+    const gregEndDate = gregStartDate.clone().add(years, 'year');
 
     let gregCounterDate = gregStartDate.clone();
     let hijriCounterDate = {...hijriStartDate};
@@ -137,9 +140,9 @@ function hijriDateIsInList(list: IHijriEvent[], date: IHijriDate): IHijriEvent {
         const date = event.date;
         const startDate = date.clone().add(-1, 'day');
         return {
-            start: [startDate.year(), startDate.month() + 1, startDate.date(), 18, 0],
+            start: [startDate.year(), startDate.month() + 1, startDate.date(), eventStartHour, eventStartMinute],
             startInputType: 'local',
-            end: [date.year(), date.month() + 1, date.date(), 18, 0],
+            end: [date.year(), date.month() + 1, date.date(), eventEndHour, eventEndMinute],
             endInputType: 'local',
             title: event.name,
             alarms: [
