@@ -64,7 +64,7 @@ function readData(file: string): IHijriEvent[] {
     });
 }
 
-async function run(): Promise<void> {
+function run(): void {
     const hijriWarasEvents = readData(path.resolve(filename));
     const gregWarasEvents: IGregEvent[] = [];
 
@@ -113,6 +113,4 @@ async function run(): Promise<void> {
     writeFileSync(outFilename, ics.createEvents(icsEvents).value);
 }
 
-(async () => {
-    await run();
-})();
+run();
