@@ -7,8 +7,8 @@ import * as ics from 'ics';
 import { readFileSync, writeFileSync } from 'fs';
 import { IHijriEvent } from './models/hijriEvent.model';
 import { IHijriDate } from './models/hijriDate.model';
-import { HijriMonth } from './models/enums/HijriMonth.enum';
 import { IGregEvent } from './models/gregEvent.model';
+import { parseHijriDate, findEventByDate, addDayToHijriDate } from './helpers/hijriDate.helper';
 
 const filename = args['file'] || './assets/waras.csv';
 const gregRefDate = args['greg-ref'] || '2020-03-26';
@@ -37,7 +37,7 @@ const [eventEndHour, eventEndMinute] = args['event-end-time']?.split('-') || [18
         process.exit(1);
     }
 })();
-interface WarasCsv {
+interface IWarasCsv {
     name: string;
     warasDay: string;
     warasMonth: string;
@@ -50,7 +50,7 @@ function readData(file: string): IHijriEvent[] {
     let data = parse(csv, {
         columns: true,
         ltrim: true,
-    }) as WarasCsv[];
+    }) as IWarasCsv[];
 
     return data.map<IHijriEvent>((record) => {
         return {
@@ -64,54 +64,7 @@ function readData(file: string): IHijriEvent[] {
     });
 }
 
-function parseHijriDate(date: string): IHijriDate {
-    const regex = /(\d{4})\-(\d{2})\-(\d{2})/;
-    const match = date.match(regex);
-
-    return {
-        year: parseInt(match[1]),
-        month: parseInt(match[2]) as HijriMonth,
-        day: parseInt(match[3]),
-    };
-}
-
-function addDayToHijriDate(date: IHijriDate): IHijriDate {
-    const daysInMonth = date.month % 2 === 0 ? 29 : 30;
-    const result = {...date};
-
-    result.day++;
-
-    if (result.day > daysInMonth) {
-        result.day = 1;
-        result.month++;
-
-        if (result.month > 12) {
-            result.month = 1;
-            result.year++;
-        }
-    }
-
-    return result;
-}
-
-function areHijriDatesEqual(date1: IHijriDate, date2: IHijriDate): boolean {
-    if (date1.month === date2.month && date1.day === date2.day) {
-        return true;
-    }
-
-    return false;
-}
-
-function hijriDateIsInList(list: IHijriEvent[], date: IHijriDate): IHijriEvent {
-    for (const item of list) {
-        if (areHijriDatesEqual(item.date, date)) return item;
-    }
-
-    return undefined;
-}
-
-(async () => {
-
+async function run(): Promise<void> {
     const hijriWarasEvents = readData(path.resolve(filename));
     const gregWarasEvents: IGregEvent[] = [];
 
@@ -124,7 +77,7 @@ function hijriDateIsInList(list: IHijriEvent[], date: IHijriDate): IHijriEvent {
     let hijriCounterDate = {...hijriStartDate};
 
     while (gregCounterDate.isSameOrBefore(gregEndDate)) {
-        const hijriEvent = hijriDateIsInList(hijriWarasEvents, hijriCounterDate);
+        const hijriEvent = findEventByDate(hijriWarasEvents, hijriCounterDate);
         if (hijriEvent) {
             gregWarasEvents.push({
                 date: gregCounterDate.clone(),
@@ -158,5 +111,8 @@ function hijriDateIsInList(list: IHijriEvent[], date: IHijriDate): IHijriEvent {
     });
 
     writeFileSync(outFilename, ics.createEvents(icsEvents).value);
+}
 
+(async () => {
+    await run();
 })();
