@@ -1,4 +1,4 @@
-import { parseHijriDate, addDayToHijriDate, areHijriDatesEqual, findEventByDate } from "../../src/helpers/hijriDate.helper";
+import { parseHijriDate, addDayToHijriDate, areHijriDatesEqual, findEventsByDate } from "../../src/helpers/hijriDate.helper";
 import { IHijriDate } from "../../src/models/hijriDate.model";
 import { IHijriEvent } from "../../src/models/hijriEvent.model";
 
@@ -166,7 +166,8 @@ describe('hijriDateIsInList', () => {
                     day: 1,
                     month: 1,
                     year: 1441,
-                }
+                },
+                uid: 'Some uuid'
             }
         ];
         const date: IHijriDate = {
@@ -175,15 +176,17 @@ describe('hijriDateIsInList', () => {
             year: 1441,
         };
 
-        const result = findEventByDate(list, date);
+        const result = findEventsByDate(list, date);
 
-        expect(result).toMatchObject({
+        expect(result).toHaveLength(1);
+        expect(result[0]).toMatchObject({
             name: 'test',
             date: expect.objectContaining({
                 day: 1,
                 month: 1,
                 year: 1441,
-            })
+            }),
+            uid: 'Some uuid'
         });
     });
 
@@ -195,7 +198,8 @@ describe('hijriDateIsInList', () => {
                     day: 1,
                     month: 5,
                     year: 1441,
-                }
+                },
+                uid: 'Some uuid'
             }
         ];
         const date: IHijriDate = {
@@ -204,8 +208,10 @@ describe('hijriDateIsInList', () => {
             year: 1441,
         };
 
-        const result = findEventByDate(list, date);
+        const result = findEventsByDate(list, date);
 
-        expect(result).toBeUndefined();
+        expect(result).toHaveLength(0);
     });
+
+    test.todo('find all events corresponding to date');
 });

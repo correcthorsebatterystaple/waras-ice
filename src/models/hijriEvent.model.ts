@@ -1,6 +1,7 @@
-import { IHijriDate } from "./hijriDate.model";
+import { IHijriDate } from './hijriDate.model';
 
 export interface IHijriEvent {
     name: string;
     date: IHijriDate;
+    uid: string;
 }

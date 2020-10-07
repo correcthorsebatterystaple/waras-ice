@@ -62,10 +62,8 @@ export function areHijriDatesEqual(date1: IHijriDate, date2: IHijriDate): boolea
     return false;
 }
 
-export function findEventByDate(list: IHijriEvent[], date: IHijriDate): IHijriEvent {
-    for (const item of list) {
-        if (areHijriDatesEqual(item.date, date)) return item;
-    }
+export function findEventsByDate(list: IHijriEvent[], date: IHijriDate): IHijriEvent[] {
+    const result = list.filter(item => areHijriDatesEqual(item.date, date));
 
-    return undefined;
+    return result;
 }
