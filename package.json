@@ -15,7 +15,7 @@
     "csv-parse": "^4.10.1",
     "ics": "^2.22.1",
     "minimist-argv": "^1.1.0",
-    "moment": "^2.27.0"
+    "moment": "^2.29.4"
   },
   "devDependencies": {
     "@types/node": "^14.0.22",
